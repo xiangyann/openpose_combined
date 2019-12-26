@@ -14,6 +14,7 @@
 //dirty hacks for higher than implementation
 double coor_x[100][2]={[0 ... 99][0 ... 1] = 16384}, coor_y[100][2]={[0 ... 99][0 ... 1] = 16384};
 int fall[100]={[0 ... 99] = 0};
+int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100]={[0 ... 99] = 0};
 //implement if needed
 //double coor_x_old[100][4]={0}, coor_y_old[100][4]={0};
 int num = -1;
@@ -139,6 +140,8 @@ static void coorx(json_value* value, int x, int y){
 }
 static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
+	if(coor_y[num][0]-coor_y[num][1]>0.5)righthand[num]=1;
+	if(coor_y[num][2]-coor_y[num][3]>0.5)lefthand[num]=1;
 	if(coor_x[num][0]==16384 || coor_x[num][1]==16384 || coor_y[num][0]==16384 || coor_y[num][1]==16384){
 		//skip
 		//printf("skip!\n");
@@ -149,28 +152,21 @@ static void coory(json_value* value, int x, int y){
 		//if(coor_y[num][y]!=0)coor_y_old[num][y]=coor_y[num][y];
 		//printf("==DEBUG== Human[%d], x1=%f, y1=%f, x8=%f, y8=%f",num,coor_x[num][0],coor_y[num][0],coor_x[num][1],coor_y[num][1]);
 		//printf(" x1-x8= %f, y1-y8=%f, Slope = %f\n",(coor_x[num][1]-coor_x[num][0]),(coor_y[num][1]-coor_y[num][0]), slope);
+
 		if(slope > -1 && slope < 1)fall[num]=1;
 		//if(coor_y[num][2]-coor_y[num][3]>0.5)lefthand[num]=1;
-		output();
 		//printf("x: %d, coor_x[%d][%d] = %f\n",x/3,num,y,coor_y[num][y]);
 		//printf(", ycoor=%f, y=%d\n",coor_y[num][y],y);
 	}
+	if(righthand[num]||lefthand[num]||fall[num])output();
 }
 
 static void output(){
 	if(num==0)return;
-	//DO SOMETHING HERE!!!!!!
 	result = time(NULL);
-	/*if(old_result == result){
-		return;
-	}
-	else{*/
-		//old_result = result;
-		if(fall[num]){
-			//printf("time: %ld, %ld  ",old_result,result);
-			printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
-		}
-	//}
+	if(fall[num])printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
+	if(righthand[num])printf("人類 %d 舉起了他的右手 @ %s！\n", num, ctime(&result));
+	if(lefthand[num])printf("人類 %d 舉起了他的左手@ %s！\n", num, ctime(&result));
 	
 }
 
@@ -263,13 +259,14 @@ int main(int argc, char** argv){
 					coor_y[l][n] = 16384.0;
 					coor_x[l][n] = 16384.0;
 				}
-				//lefthand[l] = 0;
+				lefthand[l] = 0;
+				righthand[l] = 0;
 				fall[l] = 0;
 			}
 			num = -1;
 			num_old = 0;
-				}
-			}
+		}
+	}
 
 	return 0;
 }
