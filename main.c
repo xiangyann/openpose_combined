@@ -166,7 +166,7 @@ static void output(){
 	result = time(NULL);
 	if(fall[num])printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
 	if(righthand[num])printf("人類 %d 舉起了他的右手 @ %s！\n", num, ctime(&result));
-	if(lefthand[num])printf("人類 %d 舉起了他的左手@ %s！\n", num, ctime(&result));
+	if(lefthand[num])printf("人類 %d 舉起了他的左手 @ %s！\n", num, ctime(&result));
 	
 }
 
