@@ -12,7 +12,7 @@
 #endif
 
 //dirty hacks for higher than implementation
-double coor_x[100][2]={[0 ... 99][0 ... 1] = 16384}, coor_y[100][2]={[0 ... 99][0 ... 1] = 16384};
+double coor_x[100][6]={[0 ... 99][0 ... 1] = 16384}, coor_y[100][6]={[0 ... 99][0 ... 1] = 16384};
 int fall[100]={[0 ... 99] = 0};
 int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100]={[0 ... 99] = 0};
 //implement if needed
@@ -100,9 +100,11 @@ static void process_value(json_value* value, int depth, int x)
 					if(x/3==1 || x/3==8){
 						switch(x/3){
 							case 1:spit(value, x, 0);break;
-							case 8:spit(value, x, 1);break;
-							//case 5:spit(value, x, 2);break;
-							//case 6:spit(value, x, 3);break;
+							case 2:spit(value, x, 1);break;
+							case 3:spit(value, x, 2);break;
+							case 5:spit(value, x, 3);break;
+							case 6:spit(value, x, 4);break;
+							case 8:spit(value, x, 5);break;
 							default:break;
 						}
 					}
@@ -142,11 +144,11 @@ static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
 	if(coor_y[num][0]-coor_y[num][1]>0.5)righthand[num]=1;
 	if(coor_y[num][2]-coor_y[num][3]>0.5)lefthand[num]=1;
-	if(coor_x[num][0]==16384 || coor_x[num][1]==16384 || coor_y[num][0]==16384 || coor_y[num][1]==16384){
+	if(coor_x[num][0]==16384 || coor_x[num][5]==16384 || coor_y[num][0]==16384 || coor_y[num][5]==16384){
 		//skip
 		//printf("skip!\n");
 	}else{
-		double slope = ((coor_y[num][1]-coor_y[num][0])/(coor_x[num][1]-coor_x[num][0]));
+		double slope = ((coor_y[num][5]-coor_y[num][0])/(coor_x[num][5]-coor_x[num][0]));
 		//char* part_name=body_parts(x);
 		//YOLO
 		//if(coor_y[num][y]!=0)coor_y_old[num][y]=coor_y[num][y];
@@ -162,7 +164,9 @@ static void coory(json_value* value, int x, int y){
 }
 
 static void output(){
+	//fix for the 0th person is not existent, might need to look into it more
 	if(num==0)return;
+	//print the results or other stuffs
 	result = time(NULL);
 	if(fall[num])printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
 	if(righthand[num])printf("人類 %d 舉起了他的右手 @ %s！\n", num, ctime(&result));
@@ -255,7 +259,7 @@ int main(int argc, char** argv){
 			*/
 			remove(filename);
 			for(int l=0; l<=num; l++){
-				for(int n=0; n<2; n++){
+				for(int n=0; n<6; n++){
 					coor_y[l][n] = 16384.0;
 					coor_x[l][n] = 16384.0;
 				}
