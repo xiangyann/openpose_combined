@@ -97,7 +97,7 @@ static void process_value(json_value* value, int depth, int x)
                         //printf("double: %f\n", value->u.dbl);
 					if(x==0)num++;
 					//printf("%d",x);
-					if(x/3==1 || x/3==8){
+					if(x/3==1 || x/3==2 || x/3==3 || x/3==4 || x/3==5 || x/3==6 || x/3==8){
 						switch(x/3){
 							case 1:spit(value, x, 0);break;
 							case 2:spit(value, x, 1);break;
