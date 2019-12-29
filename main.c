@@ -12,7 +12,7 @@
 #endif
 
 //dirty hacks for higher than implementation
-double coor_x[100][6]={[0 ... 99][0 ... 1] = 16384}, coor_y[100][6]={[0 ... 99][0 ... 1] = 16384};
+double coor_x[100][6]={[0 ... 99][0 ... 5] = 16384}, coor_y[100][6]={[0 ... 99][0 ... 5] = 16384};
 int fall[100]={[0 ... 99] = 0};
 int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100]={[0 ... 99] = 0};
 //implement if needed
