@@ -20,9 +20,9 @@ int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100
 int num = -1;
 int num_old = 0;
 char defaultfilename[16] = "_keypoints.json";
-char prependfilename[36] = "/home/e516/openpose_fall_down/json/";
+char prependfilename[35] = "/home/e516/openpose_combined/json/";
 char filenamestring[13] = "000000000000";
-char filename[63] = "/home/e516/openpose_fall_down/json/000000000000_keypoints.json";
+char filename[62] = "/home/e516/openpose_combined/json/000000000000_keypoints.json";
 long long int file_i = 0;
 time_t old_result = 0;
 time_t result;
@@ -142,8 +142,8 @@ static void coorx(json_value* value, int x, int y){
 }
 static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
-	if(coor_y[num][0]-coor_y[num][1]>0.5)righthand[num]=1;
-	if(coor_y[num][2]-coor_y[num][3]>0.5)lefthand[num]=1;
+	if(coor_y[num][1]-coor_y[num][2]>0.5)righthand[num]=1;
+	if(coor_y[num][3]-coor_y[num][4]>0.5)lefthand[num]=1;
 	if(coor_x[num][0]==16384 || coor_x[num][5]==16384 || coor_y[num][0]==16384 || coor_y[num][5]==16384){
 		//skip
 		//printf("skip!\n");
