@@ -1,5 +1,5 @@
-JSON parser from: https://github.com/udp/json-parser
-openpose from: https://github.com/CMU-Perceptual-Computing-Lab/openpose
+JSON parser from: https://github.com/udp/json-parser<br >
+openpose from: https://github.com/CMU-Perceptual-Computing-Lab/openpose<br >
 
 編譯/Building
 -
