@@ -21,9 +21,9 @@ int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100
 int num = -1;
 int num_old = 0;
 char defaultfilename[16] = "_keypoints.json";
-char prependfilename[34] = "/home/ele/openpose_combined/json/";
+char prependfilename[35] = "/home/e516/openpose_combined/json/";
 char filenamestring[13] = "000000000000";
-char filename[61] = "/home/ele/openpose_combined/json/000000000000_keypoints.json";
+char filename[62] = "/home/e516/openpose_combined/json/000000000000_keypoints.json";
 long long int file_i = 0;
 time_t old_result = 0;
 time_t result;
