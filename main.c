@@ -12,7 +12,8 @@
 #endif
 
 //dirty hacks for higher than implementation
-double coor_x[100][6]={[0 ... 99][0 ... 5] = 16384}, coor_y[100][6]={[0 ... 99][0 ... 5] = 16384};
+double coor_x[100][16]={[0 ... 99][0 ... 15] = 16384}, coor_y[100][16]={[0 ... 99][0 ... 15] = 16384};
+int squat[100]={[0 ... 99] = 0};
 int fall[100]={[0 ... 99] = 0};
 int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100]={[0 ... 99] = 0};
 //implement if needed
@@ -26,7 +27,7 @@ char filename[62] = "/home/e516/openpose_combined/json/000000000000_keypoints.js
 long long int file_i = 0;
 time_t old_result = 0;
 time_t result;
-/* 
+/*
 gcc main.c json.c -lm
  */
 static void print_depth_shift(int depth)
@@ -97,7 +98,7 @@ static void process_value(json_value* value, int depth, int x)
                         //printf("double: %f\n", value->u.dbl);
 					if(x==0)num++;
 					//printf("%d",x);
-					if(x/3==1 || x/3==2 || x/3==3 || x/3==5 || x/3==6 || x/3==8){
+					if(x/3==1 || x/3==2 || x/3==3 || x/3==5 || x/3==6 || x/3==8 || x/3==9 || x/3==10 || x/3==12 || x/3==13 || x/3==19 || x/3==20 || x/3==22 || x/3==23){
 						switch(x/3){
 							case 1:spit(value, x, 0);break;
 							case 2:spit(value, x, 1);break;
@@ -105,6 +106,16 @@ static void process_value(json_value* value, int depth, int x)
 							case 5:spit(value, x, 3);break;
 							case 6:spit(value, x, 4);break;
 							case 8:spit(value, x, 5);break;
+							case 9:spit(value, x, 6);break;
+							case 10:spit(value, x, 7);break;
+							case 11:spit(value, x, 8);break;
+							case 12:spit(value, x, 9);break;
+							case 13:spit(value, x, 10);break;
+							case 14:spit(value, x, 11);break;
+							case 19:spit(value, x, 12);break;
+							case 20:spit(value, x, 13);break;
+							case 22:spit(value, x, 14);break;
+							case 23:spit(value, x, 15);break;
 							default:break;
 						}
 					}
@@ -129,6 +140,16 @@ char* body_parts(int x){
 		case 5:return "LShoulder";
 		case 6:return "LElbow";
 		case 8:return "MidHip";
+		case 9:return "RHip";
+		case 10:return "RKnee";
+		case 11:return "RAnkle";
+		case 12:return "LHip";
+		case 13:return "LKnee";
+		case 14:return "LAnkle";
+		case 19:return "LBigToe";
+		case 20:return "LSmallToe";
+		case 22:return "RBigToe";
+		case 23:return "RSmallToe";
 		default:return "Unimplemented";
 	}
 }
@@ -142,6 +163,11 @@ static void coorx(json_value* value, int x, int y){
 }
 static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
+	printf("dbg = %d %f %f %f %f\n", squat[num],coor_y[num][7],coor_y[num][6],coor_y[num][10],coor_y[num][9]);
+	if(coor_x[num][7]==16384 && coor_x[num][6]==16384 && coor_x[num][10] && coor_x[num][9] &&coor_y[num][7]==16384 && coor_y[num][6]==16384 && coor_y[num][10]==16384 && coor_y[num][9]==16384){
+	}else{
+		if(coor_y[num][6] > coor_y[num][7]&&coor_y[num][9] > coor_y[num][10])squat[num]=1;
+	}
 	if(coor_y[num][1]-coor_y[num][2]>0.5)righthand[num]=1;
 	if(coor_y[num][3]-coor_y[num][4]>0.5)lefthand[num]=1;
 	if(coor_x[num][0]==16384 || coor_x[num][5]==16384 || coor_y[num][0]==16384 || coor_y[num][5]==16384){
@@ -149,6 +175,7 @@ static void coory(json_value* value, int x, int y){
 		//printf("skip!\n");
 	}else{
 		double slope = ((coor_y[num][5]-coor_y[num][0])/(coor_x[num][5]-coor_x[num][0]));
+		printf("abcd = %f\n", slope);
 		//char* part_name=body_parts(x);
 		//YOLO
 		//if(coor_y[num][y]!=0)coor_y_old[num][y]=coor_y[num][y];
@@ -158,9 +185,9 @@ static void coory(json_value* value, int x, int y){
 		if(slope > -1 && slope < 1)fall[num]=1;
 		//if(coor_y[num][2]-coor_y[num][3]>0.5)lefthand[num]=1;
 		//printf("x: %d, coor_x[%d][%d] = %f\n",x/3,num,y,coor_y[num][y]);
-		//printf(", ycoor=%f, y=%d\n",coor_y[num][y],y);
+		//printf(", ycoor=%f, y=%d\n",coor_y[num][y],y),y,coor_y[num][y]);
 	}
-	if(righthand[num]||lefthand[num]||fall[num])output();
+	if(righthand[num]||lefthand[num]||fall[num]||squat[num])output();
 }
 
 static void output(){
@@ -171,7 +198,8 @@ static void output(){
 	if(fall[num])printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
 	if(righthand[num])printf("人類 %d 舉起了他的右手 @ %s！\n", num, ctime(&result));
 	if(lefthand[num])printf("人類 %d 舉起了他的左手 @ %s！\n", num, ctime(&result));
-	
+	if(squat[num])printf("人類 %d 蹲下了!@ %s \n", num, ctime(&result));
+
 }
 
 static void spit(json_value* value, int x, int y){
@@ -197,7 +225,7 @@ int main(int argc, char** argv){
 	int pollingDelay = 100;
 	json_char* json;
 	json_value* value;
-	
+
 	for(file_i = 0;file_i < 999999999999; file_i++){
 		sprintf(filenamestring, "%012lld", file_i);
 		strcpy(filename, prependfilename);
@@ -221,7 +249,7 @@ int main(int argc, char** argv){
 				fprintf(stderr, "Memory error: unable to allocate %d bytes\n", file_size);
 				return 1;
 			}
-			
+
 			//if no read permission
 			fp = fopen(filename, "rt");
 			if (fp == NULL) {
@@ -235,22 +263,22 @@ int main(int argc, char** argv){
 				fprintf(stderr, "Unable to read content of %s\n", filename);
 			}
 			fclose(fp);
-			
+
 			//printf("%s\n", file_contents);
-			
+
 			json = (json_char*)file_contents;
-			
+
 			value = json_parse(json,file_size);
-			
+
 			if (value == NULL) {
 				fprintf(stderr, "Unable to parse data\n");
 			}
-			
+
 			process_value(value, 0, 0);
-			
+
 			json_value_free(value);
 			free(file_contents);
-			
+
 			/*#ifdef _WIN32
 			Sleep(pollingDelay);
 			#else
@@ -259,13 +287,14 @@ int main(int argc, char** argv){
 			*/
 			remove(filename);
 			for(int l=0; l<=num; l++){
-				for(int n=0; n<6; n++){
+				for(int n=0; n<16; n++){
 					coor_y[l][n] = 16384.0;
 					coor_x[l][n] = 16384.0;
 				}
 				lefthand[l] = 0;
 				righthand[l] = 0;
 				fall[l] = 0;
+				squat[l] = 0;
 			}
 			num = -1;
 			num_old = 0;
