@@ -12,8 +12,18 @@
 #endif
 
 //dirty hacks for higher than implementation
-double coor_x[100][16]={[0 ... 99][0 ... 15] = 16384}, coor_y[100][16]={[0 ... 99][0 ... 15] = 16384};
+double coor_x[100][18]={[0 ... 99][0 ... 17] = 16384}, coor_y[100][18]={[0 ... 99][0 ... 17] = 16384};
 int squat[100]={[0 ... 99] = 0};
+int station[100]={[0 ... 99] = 0};
+int station_rest[100]={[0 ... 99] = 0};
+int station_working[100]={[0 ... 99] = 0};
+int station_hand[100]={[0 ... 99] = 0};
+int sit_working[100]={[0 ... 99] = 0};
+int sit_rest[100]={[0 ... 99] = 0};
+int sit_hand[100]={[0 ... 99] = 0};
+int sit[100]={[0 ... 99] = 0};
+int rest[100]={[0 ... 99] = 0};
+int working[100]={[0 ... 99] = 0};
 int fall[100]={[0 ... 99] = 0};
 int lefthand[100]={[0 ... 99] = 0},righthand[100]={[0 ... 99] = 0}, hand_int[100]={[0 ... 99] = 0};
 //implement if needed
@@ -98,24 +108,26 @@ static void process_value(json_value* value, int depth, int x)
                         //printf("double: %f\n", value->u.dbl);
 					if(x==0)num++;
 					//printf("%d",x);
-					if(x/3==1 || x/3==2 || x/3==3 || x/3==5 || x/3==6 || x/3==8 || x/3==9 || x/3==10 || x/3==12 || x/3==13 || x/3==19 || x/3==20 || x/3==22 || x/3==23){
+					if(x/3==1 || x/3==2 || x/3==3 || x/3==4 || x/3==5 || x/3==6 || x/3==7 || x/3==8 || x/3==9 || x/3==10 || x/3==12 || x/3==13 || x/3==19 || x/3==20 || x/3==22 || x/3==23){
 						switch(x/3){
 							case 1:spit(value, x, 0);break;
 							case 2:spit(value, x, 1);break;
 							case 3:spit(value, x, 2);break;
-							case 5:spit(value, x, 3);break;
-							case 6:spit(value, x, 4);break;
-							case 8:spit(value, x, 5);break;
-							case 9:spit(value, x, 6);break;
-							case 10:spit(value, x, 7);break;
-							case 11:spit(value, x, 8);break;
-							case 12:spit(value, x, 9);break;
-							case 13:spit(value, x, 10);break;
-							case 14:spit(value, x, 11);break;
-							case 19:spit(value, x, 12);break;
-							case 20:spit(value, x, 13);break;
-							case 22:spit(value, x, 14);break;
-							case 23:spit(value, x, 15);break;
+							case 4:spit(value, x, 3);break;
+							case 5:spit(value, x, 4);break;
+							case 6:spit(value, x, 5);break;
+							case 7:spit(value, x, 6);break;
+							case 8:spit(value, x, 7);break;
+							case 9:spit(value, x, 8);break;
+							case 10:spit(value, x, 9);break;
+							case 11:spit(value, x, 10);break;
+							case 12:spit(value, x, 11);break;
+							case 13:spit(value, x, 12);break;
+							case 14:spit(value, x, 13);break;
+							case 19:spit(value, x, 14);break;
+							case 20:spit(value, x, 15);break;
+							case 22:spit(value, x, 16);break;
+							case 23:spit(value, x, 17);break;
 							default:break;
 						}
 					}
@@ -137,8 +149,10 @@ char* body_parts(int x){
 		case 1:return "Neck";
 		case 2:return "RShoulder";
 		case 3:return "RElbow";
+		case 4:return "RWrist";
 		case 5:return "LShoulder";
 		case 6:return "LElbow";
+		case 7:return "LWrist";
 		case 8:return "MidHip";
 		case 9:return "RHip";
 		case 10:return "RKnee";
@@ -163,19 +177,33 @@ static void coorx(json_value* value, int x, int y){
 }
 static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
-	printf("dbg = %d %f %f %f %f\n", squat[num],coor_y[num][7],coor_y[num][6],coor_y[num][10],coor_y[num][9]);
-	if(coor_x[num][7]==16384 && coor_x[num][6]==16384 && coor_x[num][10] && coor_x[num][9] &&coor_y[num][7]==16384 && coor_y[num][6]==16384 && coor_y[num][10]==16384 && coor_y[num][9]==16384){
+  //坐姿
+	double Rslope = ((coor_y[num][8]-coor_y[num][9])/(coor_x[num][8]-coor_x[num][9]));
+	double Lslope = ((coor_y[num][11]-coor_y[num][12])/(coor_x[num][11]-coor_x[num][12]));
+	int sittest = 0;
+	if((Rslope > -1 && Rslope < 1)||(Lslope > -1 && Lslope < 1))sittest=1;
+	if(fall[num]==0&&sittest==1)sit[num]=1;
+  //工作中
+	if(coor_y[num][3]==16384 && coor_y[num][2]==16384 && coor_y[num][1]==16384){
 	}else{
-		if(coor_y[num][6] > coor_y[num][7]&&coor_y[num][9] > coor_y[num][10])squat[num]=1;
+		if(coor_y[num][1]-coor_y[num][3]>0.5 && coor_y[num][2]-coor_y[num][1]>0.5)working[num]=1;
 	}
+  //蹲姿
+//	printf("dbg = %d %f %f %f %f\n", squat[num],coor_y[num][7],coor_y[num][6],coor_y[num][10],coor_y[num][9]);
+	if(coor_x[num][9]==16384 && coor_x[num][8]==16384 && coor_x[num][12] && coor_x[num][11] &&coor_y[num][9]==16384 && coor_y[num][8]==16384 && coor_y[num][12]==16384 && coor_y[num][11]==16384){
+	}else{
+		if(coor_y[num][8] > coor_y[num][9]&&coor_y[num][11] > coor_y[num][12])squat[num]=1;
+	}
+  //舉手
 	if(coor_y[num][1]-coor_y[num][2]>0.5)righthand[num]=1;
-	if(coor_y[num][3]-coor_y[num][4]>0.5)lefthand[num]=1;
-	if(coor_x[num][0]==16384 || coor_x[num][5]==16384 || coor_y[num][0]==16384 || coor_y[num][5]==16384){
+	if(coor_y[num][4]-coor_y[num][5]>0.5)lefthand[num]=1;
+  //倒下
+	if(coor_x[num][0]==16384 || coor_x[num][7]==16384 || coor_y[num][0]==16384 || coor_y[num][7]==16384){
 		//skip
 		//printf("skip!\n");
 	}else{
-		double slope = ((coor_y[num][5]-coor_y[num][0])/(coor_x[num][5]-coor_x[num][0]));
-		printf("abcd = %f\n", slope);
+		double slope = ((coor_y[num][7]-coor_y[num][0])/(coor_x[num][7]-coor_x[num][0]));
+		//printf("abcd = %f\n", slope);
 		//char* part_name=body_parts(x);
 		//YOLO
 		//if(coor_y[num][y]!=0)coor_y_old[num][y]=coor_y[num][y];
@@ -187,7 +215,23 @@ static void coory(json_value* value, int x, int y){
 		//printf("x: %d, coor_x[%d][%d] = %f\n",x/3,num,y,coor_y[num][y]);
 		//printf(", ycoor=%f, y=%d\n",coor_y[num][y],y),y,coor_y[num][y]);
 	}
-	if(righthand[num]||lefthand[num]||fall[num]||squat[num])output();
+  //休息
+	if(working[num]==0 && righthand[num]==0 && lefthand[num]==0)rest[num]=1;
+  //站姿
+	if(fall[num]==0 && sit[num]==0 && squat[num]==0)station[num]=1;
+  //坐姿有問題
+	if((sit[num]==1 && righthand[num]==1) || (sit[num]==1 && lefthand[num]==1))sit_hand[num]=1;
+  //坐姿工作中
+	if(sit[num]==1 && working[num]==1 )sit_working[num]=1;
+  //坐姿休息
+	if(sit[num]==1 && rest[num]==1 )sit_rest[num]=1;
+  //站姿有問題
+	if(station[num]==1 && righthand[num]==1 && lefthand[num]==1)station_hand[num]=1;
+  //站姿工作中
+	if(station[num]==1 && working[num]==1)station_working[num]=1;
+  //站姿休息
+	if(station[num]==1 && rest[num]==1)station_rest[num]=1;
+	if(righthand[num]||lefthand[num]||fall[num]||squat[num]||working[num]||sit[num]||station[num]||station_rest[num]||station_working[num]||station_hand[num]||sit_working[num]||sit_rest[num]||sit_hand[num]||rest[num])output();
 }
 
 static void output(){
@@ -195,10 +239,20 @@ static void output(){
 	if(num==0)return;
 	//print the results or other stuffs
 	result = time(NULL);
-	if(fall[num])printf("人類 %d 跌倒了！@ %s \n", num, ctime(&result));
-	if(righthand[num])printf("人類 %d 舉起了他的右手 @ %s！\n", num, ctime(&result));
-	if(lefthand[num])printf("人類 %d 舉起了他的左手 @ %s！\n", num, ctime(&result));
-	if(squat[num])printf("人類 %d 蹲下了!@ %s \n", num, ctime(&result));
+	if(fall[num])printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
+//	if(righthand[num])printf("人類 %d 有問題 @ %s！\n", num, ctime(&result));
+//	if(lefthand[num])printf("人類 %d 有問題 @ %s！\n", num, ctime(&result));
+//	if(squat[num])printf("人類 %d 蹲下了!@ %s \n", num, ctime(&result));
+//	if(sit[num])printf("人類 %d 坐著!@ %s \n",num, ctime(&result));
+//	if(working[num])printf("人類 %d 工作中!@ %s \n",num, ctime(&result));
+	if(sit_hand[num])printf("人類 %d 坐著有問題!@ %s \n",num, ctime(&result));
+	if(sit_working[num])printf("人類 %d 坐著工作中!@ %s \n",num, ctime(&result));
+	if(sit_rest[num])printf("人類 %d 坐著休息!@ %s \n",num, ctime(&result));
+	if(station_hand[num])printf("人類 %d 站著有問題!@ %s \n",num, ctime(&result));
+	if(station_working[num])printf("人類 %d 請勿站著工作!@ %s \n",num, ctime(&result));
+	if(station_rest[num])printf("人類 %d 站著休息!@ %s \n",num, ctime(&result));
+	//if(ststion[num])printf("人類 %d 站著!@ %s \n",num, ctime(&result));
+	//if(rest[num])printf("人類 %d 休息中!@ %s \n",num, ctime(&result));
 
 }
 
@@ -295,6 +349,16 @@ int main(int argc, char** argv){
 				righthand[l] = 0;
 				fall[l] = 0;
 				squat[l] = 0;
+				sit[l] = 0;
+				working[l] = 0;
+				station[l] = 0;
+				station_rest[l] = 0;
+				station_working[l] = 0;
+				station_hand[l] = 0;
+				sit_working[l] = 0;
+				sit_rest[l] = 0;
+				sit_hand[l] = 0;
+				rest[l] = 0;
 			}
 			num = -1;
 			num_old = 0;
