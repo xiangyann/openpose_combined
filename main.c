@@ -185,7 +185,9 @@ static void coory(json_value* value, int x, int y){
 	if(fall[num]==0&&sittest==1)sit[num]=1;
   //工作中
 	if(coor_y[num][3]==16384 && coor_y[num][2]==16384 && coor_y[num][1]==16384){
-	}else{
+		//TODO
+	}
+	else{
 		if(coor_y[num][1]-coor_y[num][3]>0.5 && coor_y[num][2]-coor_y[num][1]>0.5)working[num]=1;
 	}
   //蹲姿
@@ -263,9 +265,8 @@ static void spit(json_value* value, int x, int y){
 		case 2:
 		       //confidence, used as counter
 		       //printf("x: %d, This is c: %f!\n",x/3,value->u.dbl);
-		       //if(y==3)num++;
-			   //printf("Y: %d\n",y);
-			   break;
+		       
+		       break;
 		default:break;
 	}
 }
