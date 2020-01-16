@@ -4,6 +4,9 @@
 #include <string.h>
 #include <time.h>
 #include "json.h"
+#include <sys/socket.h> //for socket
+#include <arpa/inet.h> //inet_addr
+#include <pthread.h> //for threading , link with lpthread
 
 #ifdef _WIN32
 #include <Windows.h>
