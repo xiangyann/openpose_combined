@@ -6,7 +6,6 @@
 #include "json.h"
 #include <sys/socket.h> //for socket
 #include <arpa/inet.h> //inet_addr
-#include <pthread.h> //for threading , link with lpthread
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -258,7 +257,36 @@ static void output(){
 	if(station_rest[num])printf("人類 %d 站著休息!@ %s \n",num, ctime(&result));
 	//if(ststion[num])printf("人類 %d 站著!@ %s \n",num, ctime(&result));
 	//if(rest[num])printf("人類 %d 休息中!@ %s \n",num, ctime(&result));
-
+	int sock;
+    struct sockaddr_in server;
+    char message[1000];
+     
+    //Create socket
+    sock = socket(AF_INET , SOCK_STREAM , 0);
+    if (sock == -1)
+    {
+        printf("Could not create socket");
+    }
+    puts("Socket created");
+     
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_family = AF_INET;
+    server.sin_port = htons( 2000 );
+ 
+    //Connect to remote server
+    if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
+    {
+        perror("connect failed. Error");
+        return 1;
+    }
+    //Send some data
+    if( send(sock , message , strlen(message) , 0) < 0)
+    {
+        puts("Send failed");
+        return 1;
+    }
+     
+    close(sock);
 }
 
 static void spit(json_value* value, int x, int y){
