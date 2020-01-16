@@ -277,13 +277,11 @@ static void output(){
     if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
     {
         perror("connect failed. Error");
-        return 1;
     }
     //Send some data
     if( send(sock , message , strlen(message) , 0) < 0)
     {
         puts("Send failed");
-        return 1;
     }
      
     close(sock);
