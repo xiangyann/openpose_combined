@@ -43,6 +43,7 @@ time_t result;
 int sock;
 struct sockaddr_in server;
 char message[1000];
+char new_message[1001];
 int msg_len=0;
 /*
 gcc main.c json.c -lm
@@ -251,10 +252,13 @@ static void output(){
 	//TODO
 	//prepend message at main
 	char num_c[2];
+	int action = 0;
+	char action_c[2];
+	num--;
 	sprintf(num_c, "%02x", (unsigned char)num);
+	num++;
 	msg_len += 1;
 	memcpy(message, num_c, msg_len);
-	sprintf(num_c, "%02x", (unsigned char)
 	result = time(NULL);
 	if(fall[num])printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
 //	if(righthand[num])printf("人類 %d 有問題 @ %s！\n", num, ctime(&result));
@@ -270,7 +274,21 @@ static void output(){
 	if(station_rest[num])printf("人類 %d 站著休息!@ %s \n",num, ctime(&result));
 	//if(ststion[num])printf("人類 %d 站著!@ %s \n",num, ctime(&result));
 	//if(rest[num])printf("人類 %d 休息中!@ %s \n",num, ctime(&result));
-    
+    if(fall[num]||squat[num])action = 1;
+	else if(sit_hand[num])action = 2;
+	else if(sit_working[num])action = 3;
+	else if(sit[num])action = 4;
+	else if(station_hand[num])action = 6;
+	else if(station_working[num])action = 7;
+	else if(station_rest[num])action = 5;
+	else action = 0;
+	
+	
+	if(action!=0){
+		sprintf(action_c, "%02x", (unsigned char)action);
+		msg_len += 1;
+		memcpy(message, action_c, msg_len);
+	}
 
 }
 
@@ -363,9 +381,11 @@ int main(int argc, char** argv){
 			{
 				perror("connect failed. Error");
 			}
-			message = 
+			sprintf(new_message, "%02x", (unsigned char)num);
+			msg_len += 1;
+			memcpy(new_message, message, msg_len);
 			//Send some data
-			if( send(sock , message , strlen(message) , 0) < 0)
+			if( send(sock , new_message , msg_len , 0) < 0)
 			{
 				puts("Send failed");
 			}
