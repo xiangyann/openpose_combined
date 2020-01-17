@@ -290,7 +290,7 @@ static void output(){
 	if(action!=0){
 		sprintf(action_c, "%02x", (unsigned char)action);
 		msg_len += 1;
-		memcpy(message[msg_len], action_c, msg_len);
+		memcpy(message[msg_len], action_c[0], msg_len);
 	}
 
 }
@@ -386,9 +386,9 @@ int main(int argc, char** argv){
 			}
 			sprintf(new_message, "%02x", (unsigned char)num);
 			msg_len += 1;
-			memcpy(new_message[msg_len], message, msg_len);
+			for(int i1 = 0; i1 < msg_len; i1++)new_message[msg_len+1] = message[msg_len];
 			msg_len += 1;
-			memcpy(new_message[msg_len], close_tag, msg_len);
+			memcpy(new_message[msg_len], close_tag[0], msg_len);
 			//Send some data
 			if( send(sock , new_message , msg_len , 0) < 0)
 			{
