@@ -39,6 +39,11 @@ char filename[62] = "/home/e516/openpose_combined/json/000000000000_keypoints.js
 long long int file_i = 0;
 time_t old_result = 0;
 time_t result;
+
+int sock;
+struct sockaddr_in server;
+char message[1000];
+int msg_len=0;
 /*
 gcc main.c json.c -lm
  */
@@ -241,7 +246,15 @@ static void coory(json_value* value, int x, int y){
 static void output(){
 	//fix for the 0th person is not existent, might need to look into it more
 	if(num==0)return;
-	//print the results or other stuffs
+	if(num>99)return;
+	
+	//TODO
+	//prepend message at main
+	char num_c[2];
+	sprintf(num_c, "%02x", (unsigned char)num);
+	msg_len += 1;
+	memcpy(message, num_c, msg_len);
+	sprintf(num_c, "%02x", (unsigned char)
 	result = time(NULL);
 	if(fall[num])printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
 //	if(righthand[num])printf("人類 %d 有問題 @ %s！\n", num, ctime(&result));
@@ -257,34 +270,8 @@ static void output(){
 	if(station_rest[num])printf("人類 %d 站著休息!@ %s \n",num, ctime(&result));
 	//if(ststion[num])printf("人類 %d 站著!@ %s \n",num, ctime(&result));
 	//if(rest[num])printf("人類 %d 休息中!@ %s \n",num, ctime(&result));
-	int sock;
-    struct sockaddr_in server;
-    char message[1000];
-     
-    //Create socket
-    sock = socket(AF_INET , SOCK_STREAM , 0);
-    if (sock == -1)
-    {
-        printf("Could not create socket");
-    }
-    puts("Socket created");
-     
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_family = AF_INET;
-    server.sin_port = htons( 2000 );
- 
-    //Connect to remote server
-    if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
-    {
-        perror("connect failed. Error");
-    }
-    //Send some data
-    if( send(sock , message , strlen(message) , 0) < 0)
-    {
-        puts("Send failed");
-    }
-     
-    close(sock);
+    
+
 }
 
 static void spit(json_value* value, int x, int y){
@@ -359,7 +346,31 @@ int main(int argc, char** argv){
 			}
 
 			process_value(value, 0, 0);
-
+			//Create socket
+			sock = socket(AF_INET , SOCK_STREAM , 0);
+			if (sock == -1)
+			{
+				printf("Could not create socket");
+			}
+			puts("Socket created");
+			 
+			server.sin_addr.s_addr = inet_addr("127.0.0.1");
+			server.sin_family = AF_INET;
+			server.sin_port = htons( 2000 );
+		 
+			//Connect to remote server
+			if (connect(sock , (struct sockaddr *)&server , sizeof(server)) < 0)
+			{
+				perror("connect failed. Error");
+			}
+			message = 
+			//Send some data
+			if( send(sock , message , strlen(message) , 0) < 0)
+			{
+				puts("Send failed");
+			}
+			 
+			close(sock);
 			json_value_free(value);
 			free(file_contents);
 
