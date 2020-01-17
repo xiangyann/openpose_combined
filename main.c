@@ -46,6 +46,9 @@ char message[1000];
 char new_message[1001];
 int msg_len=0;
 unsigned char close[] = "\xFF";
+
+//sleep time in milliseconds
+int wait_time = 1000;
 /*
 gcc main.c json.c -lm
  */
@@ -395,13 +398,13 @@ int main(int argc, char** argv){
 			close(sock);
 			json_value_free(value);
 			free(file_contents);
-
-			/*#ifdef _WIN32
-			Sleep(pollingDelay);
+			
+			#ifdef _WIN32
+			Sleep(wait_time);
 			#else
-			usleep(pollingDelay*1000);
+			usleep(wait_time*1000);
 			#endif
-			*/
+			
 			remove(filename);
 			for(int l=0; l<=num; l++){
 				for(int n=0; n<16; n++){
