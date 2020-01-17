@@ -45,6 +45,7 @@ struct sockaddr_in server;
 char message[1000];
 char new_message[1001];
 int msg_len=0;
+unsigned char close[] = "\xFF";
 /*
 gcc main.c json.c -lm
  */
@@ -249,11 +250,10 @@ static void output(){
 	if(num==0)return;
 	if(num>99)return;
 	
-	//TODO
-	//prepend message at main
-	char num_c[2];
+	//3 instead of 2 to add \0 on end trail, suppressing warning during compile
+	char num_c[3];
 	int action = 0;
-	char action_c[2];
+	char action_c[3];
 	num--;
 	sprintf(num_c, "%02x", (unsigned char)num);
 	num++;
@@ -287,7 +287,7 @@ static void output(){
 	if(action!=0){
 		sprintf(action_c, "%02x", (unsigned char)action);
 		msg_len += 1;
-		memcpy(message, action_c, msg_len);
+		memcpy(message[msg_len], action_c, msg_len);
 	}
 
 }
@@ -383,7 +383,9 @@ int main(int argc, char** argv){
 			}
 			sprintf(new_message, "%02x", (unsigned char)num);
 			msg_len += 1;
-			memcpy(new_message, message, msg_len);
+			memcpy(new_message[msg_len], message, msg_len);
+			msg_len += 1;
+			memcpy(new_message[msg_len], close, msg_len);
 			//Send some data
 			if( send(sock , new_message , msg_len , 0) < 0)
 			{
