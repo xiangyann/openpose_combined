@@ -45,7 +45,7 @@ struct sockaddr_in server;
 char message[1000];
 char new_message[1001];
 int msg_len=0;
-unsigned char close[] = "\xFF";
+unsigned char close_tag[] = "\xFF";
 
 //sleep time in milliseconds
 int wait_time = 1000;
@@ -388,7 +388,7 @@ int main(int argc, char** argv){
 			msg_len += 1;
 			memcpy(new_message[msg_len], message, msg_len);
 			msg_len += 1;
-			memcpy(new_message[msg_len], close, msg_len);
+			memcpy(new_message[msg_len], close_tag, msg_len);
 			//Send some data
 			if( send(sock , new_message , msg_len , 0) < 0)
 			{
