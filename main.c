@@ -536,7 +536,7 @@ int main(int argc, char** argv){
 	/*for(file_i = 0;file_i < 10; file_i++){
 		write(3, "w", 80);
 	}*/
-		printf("file_i = %d \n", file_i);
+		printf("file_i = %lld \n", file_i);
 	for(file_i = 0;file_i < 999999999999; file_i++){
 	  //for(file_i = 0;file_i < 999999999999; file_i++){
 	  /*
