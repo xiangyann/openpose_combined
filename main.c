@@ -486,10 +486,6 @@ static void spit(json_value* value, int x, int y){
 		case 0:coorx(value, x, y);break;
 		case 1:coory(value, x, y);break;
 		case 2:coorcm(value, x, y);break;
-		       //confidence, used as counter
-		       //printf("x: %d, This is c: %f!\n",x/3,value->u.dbl);
-
-		       break;
 		default:break;
 	}
 }
