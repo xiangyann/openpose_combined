@@ -62,10 +62,10 @@ static void output();
 int sockfd, connfd;
 struct sockaddr_in servaddr, cli;
 char* body_parts(int x);
-static void coorx(json_value* value, int x, int y, double cm);
-static void coory(json_value* value, int x, int y, double cm);
-static void coorcm(json_value* value, int x, int y, double cm);
-static void spit(json_value* value, int x, int y, double cm);
+static void coorx(json_value* value, int x, int y);
+static void coory(json_value* value, int x, int y);
+static void coorcm(json_value* value, int x, int y);
+static void spit(json_value* value, int x, int y);
 static void process_value(json_value* value, int depth, int x);
 
 static void process_object(json_value* value, int depth)
@@ -124,32 +124,32 @@ static void process_value(json_value* value, int depth, int x)
 					//printf("%d",x);
 					if(x/3==0 || x/3==1 || x/3==2 || x/3==3 || x/3==4 || x/3==5 || x/3==6 || x/3==7 || x/3==8 || x/3==9 || x/3==10 || x/3==11 || x/3==12 || x/3==13 || x/3==14 || x/3==15|| x/3==16 || x/3==17 || x/3==18 || x/3==19 || x/3==20 || x/3==21 || x/3==22 || x/3==23 || x/3==24 || x/3==25){
 						switch(x/3){
-							case 0:spit(value, x, 0, 0);break;
-							case 1:spit(value, x, 1, 1);break;
-							case 2:spit(value, x, 2, 2);break;
-							case 3:spit(value, x, 3, 3);break;
-							case 4:spit(value, x, 4, 4);break;
-							case 5:spit(value, x, 5, 5);break;
-							case 6:spit(value, x, 6, 6);break;
-							case 7:spit(value, x, 7, 7);break;
-							case 8:spit(value, x, 8, 8);break;
-							case 9:spit(value, x, 9, 9);break;
-							case 10:spit(value, x, 10, 10);break;
-							case 11:spit(value, x, 11, 11);break;
-							case 12:spit(value, x, 12, 12);break;
-							case 13:spit(value, x, 13, 13);break;
-							case 14:spit(value, x, 14, 14);break;
-							case 15:spit(value, x, 15, 15);break;
-							case 16:spit(value, x, 16, 16);break;
-							case 17:spit(value, x, 17, 17);break;
-							case 18:spit(value, x, 18, 18);break;
-							case 19:spit(value, x, 19, 19);break;
-							case 20:spit(value, x, 20, 20);break;
-							case 21:spit(value, x, 21, 21);break;
-							case 22:spit(value, x, 22, 22);break;
-							case 23:spit(value, x, 23, 23);break;
-							case 24:spit(value, x, 24, 24);break;
-							case 25:spit(value, x, 25, 25);break;
+							case 0:spit(value, x, 0);break;
+							case 1:spit(value, x, 1);break;
+							case 2:spit(value, x, 2);break;
+							case 3:spit(value, x, 3);break;
+							case 4:spit(value, x, 4);break;
+							case 5:spit(value, x, 5);break;
+							case 6:spit(value, x, 6);break;
+							case 7:spit(value, x, 7);break;
+							case 8:spit(value, x, 8);break;
+							case 9:spit(value, x, 9);break;
+							case 10:spit(value, x, 10);break;
+							case 11:spit(value, x, 11);break;
+							case 12:spit(value, x, 12);break;
+							case 13:spit(value, x, 13);break;
+							case 14:spit(value, x, 14);break;
+							case 15:spit(value, x, 15);break;
+							case 16:spit(value, x, 16);break;
+							case 17:spit(value, x, 17);break;
+							case 18:spit(value, x, 18);break;
+							case 19:spit(value, x, 19);break;
+							case 20:spit(value, x, 20);break;
+							case 21:spit(value, x, 21);break;
+							case 22:spit(value, x, 22);break;
+							case 23:spit(value, x, 23);break;
+							case 24:spit(value, x, 24);break;
+							case 25:spit(value, x, 25);break;
 							default:break;
 						}
 					}
@@ -197,7 +197,7 @@ char* body_parts(int x){
 		default:return "Unimplemented";
 	}
 }
-static void coorx(json_value* value, int x, int y, double cm){
+static void coorx(json_value* value, int x, int y){
 	char* part_name=body_parts(x);
 	//doing YOLO
 	//if(coor_x[num][y]!=0)coor_x_old[num][y]=coor_x[num][y];
@@ -205,7 +205,7 @@ static void coorx(json_value* value, int x, int y, double cm){
 	//printf("x: %d, coor_x[%d][%d] = %f\n",x/3,num,y,coor_x[num][y]);
 	///printf("Person[%d] %s xcoor=%f, x=%d",num,part_name,coor_x[num][y],x);
 }
-static void coory(json_value* value, int x, int y, double cm){
+static void coory(json_value* value, int x, int y){
 	coor_y[num][y]=value->u.dbl;
   //運算
 	int sittest = 0;
@@ -299,7 +299,8 @@ static void coory(json_value* value, int x, int y, double cm){
 	//write(sockfd, "a", 80);
 	}
 }
-static void coorcm(json_value* value, int x, int y, double cm){
+static void coorcm(json_value* value, int x, int y){
+  coor_cm[num][y]=value->u.dbl;
 	printf("dbg = %f %f %f \n", coor_cm[num][2],coor_cm[num][3],coor_cm[num][4]);
 }
 static void output(){
@@ -310,17 +311,17 @@ static void output(){
 	/*write(3, "a", 80);
 	//write(sockfd, "a", 80);
 	if(fall[num]==1)
-	{	
+	{
 	printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
 	write(3, "r", 80);
 	}
 	if(sit[num]==1)
-	{	
+	{
 	printf("人類 %d 坐著!@ %s \n",num, ctime(&result));
 	write(3, "s", 80);
 	}
 	if(station[num]==1)
-	{	
+	{
 	printf("人類 %d 站著!@ %s \n",num, ctime(&result));
 	write(3, "t", 80);
 	}
@@ -331,7 +332,7 @@ static void output(){
 		//if (num == 1)
 		//	{
 				if(sit_rest[num]==1)
-				{	
+				{
  				  if ((file_i%16)==0)//server data show 4 data/s
 				  {
 					printf("人類 %d 坐著休息!@ %s \n", num, ctime(&result));
@@ -340,9 +341,9 @@ static void output(){
 					//write(3, "a", 300);
 				   }
 				}
-		
+
 				if(sit_working[num]==1)
-				{	
+				{
  				  if ((file_i%16)==0)
 				  {
 					printf("人類 %d 坐著工作中！@ %s \n", num, ctime(&result));
@@ -351,7 +352,7 @@ static void output(){
 				}
 
 				if(sit_hand[num]==1)
-				{	
+				{
  				  if ((file_i%16)==0)
 				  {
 					printf("人類 %d 坐著有問題!@ %s \n", num, ctime(&result));
@@ -360,7 +361,7 @@ static void output(){
 				}
 
 				if(station_rest[num]==1)
-				{	
+				{
  				  if ((file_i%16)==0)
 				  {
 					printf("人類 %d 站著休息！@ %s \n", num, ctime(&result));
@@ -370,7 +371,7 @@ static void output(){
 				}
 
 				if(station_hand[num]==1)
-				{	
+				{
 				  if ((file_i%16)==0)
 				  {
 					printf("人類 %d 站著有問題！@ %s \n", num, ctime(&result));
@@ -379,13 +380,13 @@ static void output(){
 				}
 
 				if(fall[num]==1)
-				{	
+				{
  				  if ((file_i%16)==0)
 				  {
 					printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
 					write (sockfd, "0106", 4);
 				  }
-		
+
 				}
 		//	}
 
@@ -394,45 +395,45 @@ static void output(){
 		/*else if (num ==2)
 			{
 				if(sit_rest[num]==1)
-				{	
+				{
 				printf("人類 %d 坐著休息!@ %s \n", num, ctime(&result));
 				write(3, "0201 \n", 300);
 				//write(3, "0200", 300);
 				}
-		
+
 				if(sit_working[num]==1)
-				{	
+				{
 				printf("人類 %d 坐著工作中！@ %s \n", num, ctime(&result));
 				write(3, "0202", 300);
 				}
 
 				if(sit_hand[num]==1)
-				{	
+				{
 				printf("人類 %d 坐著有問題!@ %s \n", num, ctime(&result));
 				write(3, "0203", 300);
 				}
 
 				if(station_rest[num]==1)
-				{	
+				{
 				printf("人類 %d 站著休息！@ %s \n", num, ctime(&result));
 				write(3, "0204", 300);
 				}
 
 				if(station_hand[num]==1)
-				{	
+				{
 				printf("人類 %d 站著有問題！@ %s \n", num, ctime(&result));
 				write(3, "0205", 300);
 				}
 
 				if(fall[num]==1)
-				{	
+				{
 				printf("人類 %d 倒下了！@ %s \n", num, ctime(&result));
 				write (3, "0206", 300);
-		
+
 				}
 			}*/
 	//}
-		
+
 
 /*
 //	if(righthand[num])printf("人類 %d 有問題 @ %s！\n", num, ctime(&result));
@@ -480,11 +481,11 @@ static void func()
        }
 }
 
-static void spit(json_value* value, int x, int y, double cm){
+static void spit(json_value* value, int x, int y){
 	switch(x%3){
-		case 0:coorx(value, x, y, cm);break;
-		case 1:coory(value, x, y, cm);break;
-		case 2:coorcm(value, x, y, cm);break;
+		case 0:coorx(value, x, y);break;
+		case 1:coory(value, x, y);break;
+		case 2:coorcm(value, x, y);break;
 		       //confidence, used as counter
 		       //printf("x: %d, This is c: %f!\n",x/3,value->u.dbl);
 
@@ -503,7 +504,7 @@ int main(int argc, char** argv){
 	json_char* json;
 	json_value* value;
 
-       // socket create and varification 
+       // socket create and varification
         sockfd = socket(AF_INET, SOCK_STREAM, 0);
         if (sockfd == -1) {
                 printf("socket creation failed...\n");
@@ -517,12 +518,12 @@ int main(int argc, char** argv){
         bzero(&servaddr, sizeof(servaddr));
 
 	//printf("sockfd=%d \n", sockfd);
-       	
+
 	// assign IP, PORT
         servaddr.sin_family = AF_INET;
         servaddr.sin_addr.s_addr = inet_addr("192.168.100.9");
         servaddr.sin_port = htons(PORT);
-	
+
         // connect the client socket to server socket
         if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr)) != 0) {
                 printf("connection with the server failed...\n");
@@ -632,7 +633,7 @@ int main(int argc, char** argv){
 			num_old = 0;
 		}
 	   }
-         // close the socket 
+         // close the socket
          close(sockfd);
 	}
 	return 0;
